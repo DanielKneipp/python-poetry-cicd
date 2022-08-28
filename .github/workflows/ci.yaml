@@ -9,16 +9,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/actions/setup
+    - name: Setup machine
+      uses: ./.github/actions/setup
 
     - name: Run pre-commit for linting and poetry checks
       uses: pre-commit/action@v3.0.0  # Runs the linting and poetry checks
 
-    - name: Build coverage file
+    - name: Run tests
       run: |
         source .venv/bin/activate
-        pytest --cache-clear --cov=python_cicd > pytest-coverage.txt
+        pytest
 
+    - name: Run tests
+      run: |
+        source .venv/bin/activate
+        pytest --cache-clear --cov=python_cicd | tee pytest-coverage.txt
+
+    # NOTE: local test with act doesn't work
     - name: Comment coverage
       uses: coroo/pytest-coverage-commentator@v1.0.2
       with:
