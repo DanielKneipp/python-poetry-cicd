@@ -23,7 +23,7 @@ jobs:
     - name: Run tests
       run: |
         source .venv/bin/activate
-        pytest --cache-clear --cov=python_cicd | tee pytest-coverage.txt
+        pytest --cache-clear --cov=python_cicd 2>&1 | tee pytest-coverage.txt
 
     # NOTE: local test with act doesn't work
     - name: Comment coverage
