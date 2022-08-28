@@ -16,10 +16,14 @@ jobs:
         poetry build
 
     - name: Publish
+      # Required since secrets is not available in conditional statements (See https://github.com/actions/runner/issues/520)
+      env:
+        REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
+        REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
       # Should come from the repo configuration as secrets
-      if: ${{ secrets.REPO_USERNAME != null }} && ${{ secrets.REPO_PASSWORD != null }}
+      if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null
       run: |
         poetry config repositories.company-internal https://repo.company.com/repository/pypi-internal
-        poetry config http-basic.company-internal $REPO_USERNAME $REPO_PASSWORD
+        poetry config http-basic.company-internal ${{ secrets.REPO_USERNAME }} ${{ secrets.REPO_PASSWORD }}
 
         poetry publish -r company-internal
