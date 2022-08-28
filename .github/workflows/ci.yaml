@@ -1,0 +1,24 @@
+name: ci
+on:
+  pull_request:
+    types: [opened, edited]
+    branches: [master]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: ./.github/actions/setup
+
+    - name: Run pre-commit for linting and poetry checks
+      uses: pre-commit/action@v3.0.0  # Runs the linting and poetry checks
+
+    - name: Build coverage file
+      run: |
+        source .venv/bin/activate
+        pytest --cache-clear --cov=app test/ > pytest-coverage.txt
+
+    - name: Comment coverage
+      uses: coroo/pytest-coverage-commentator@v1.0.2
+      with:
+        pytest-coverage: pytest-coverage.txt

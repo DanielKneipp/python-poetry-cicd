@@ -1,4 +1,4 @@
-from src import add
+from python_cicd import add
 
 
 def test_add():

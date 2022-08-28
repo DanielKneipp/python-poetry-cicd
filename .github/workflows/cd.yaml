@@ -1,0 +1,22 @@
+name: cd
+on:
+  push:
+    branches: [master]
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: ./.github/actions/setup
+
+    - name: Build package
+      run: |
+        poetry build
+
+    - name: Publish
+      if: env.REPO_USERNAME && env.REPO_PASSWORD  # Should come form the repo configuration as secrets
+      run: |
+        poetry config repositories.company-internal https://repo.company.com/repository/pypi-internal
+        poetry config http-basic.company-internal $REPO_USERNAME $REPO_PASSWORD
+
+        poetry publish -r company-internal
