@@ -30,7 +30,9 @@ must succeed to the PR to receive green light to be merged
 if the credentials are configured properly. This is executed after every merge on `master`. Since the tests
 on every change have been executed already from the `ci` workflow, we can skip to the deployment actions
 
-Both workflows reuse a `setup` action to configure the machine with the required dependencies.
+Both workflows reuse a `setup` action to configure the machine with the required dependencies. This setup
+also caches the python virtualenv when nothing has changed in the `poetry.lock` file, making subsequent
+workflow executions much faster.
 
 ### Why just one job
 
@@ -41,9 +43,6 @@ Separation of jobs make sense when you want to run things in parallel
 ([its default behavior]([snok/install-poetr](https://docs.github.com/en/actions/using-workflows/about-workflows#creating-dependent-jobs))).
 A common case is to run tests with several [machine configurations](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs),
 but since this is not the case of this project, one job is sufficient.
-
-
-
 
 ## Local setup
 
