@@ -14,5 +14,5 @@ repos:
 - repo: https://github.com/python-poetry/poetry
   rev: 1.2.0rc2
   hooks:
-  - id: poetry-check
+  # - id: poetry-check # Takes too long (~5 min)
   - id: poetry-lock

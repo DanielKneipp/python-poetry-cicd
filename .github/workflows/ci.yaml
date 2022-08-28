@@ -8,6 +8,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - uses: ./.github/actions/setup
 
     - name: Run pre-commit for linting and poetry checks
@@ -16,7 +17,7 @@ jobs:
     - name: Build coverage file
       run: |
         source .venv/bin/activate
-        pytest --cache-clear --cov=app test/ > pytest-coverage.txt
+        pytest --cache-clear --cov=python_cicd > pytest-coverage.txt
 
     - name: Comment coverage
       uses: coroo/pytest-coverage-commentator@v1.0.2
