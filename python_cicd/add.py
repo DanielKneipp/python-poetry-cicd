@@ -6,4 +6,4 @@ def add(a, b):
     a : first addendum
     b : second addendum
     """
-    return a + 10
+    return a + b
