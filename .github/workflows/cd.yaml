@@ -24,10 +24,5 @@ jobs:
       # Should come from the repo configuration as secrets
       if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null && env.REPO_ENDPOINT != null
       run: |
-        poetry --version
-        poetry config repositories.company-internal ${{ secrets.REPO_ENDPOINT }}
-        poetry config --list --verbose
-        poetry publish -r company-internal -u ${{ secrets.REPO_USERNAME }} -p '${{ secrets.REPO_PASSWORD }}'
-
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
+        poetry config repositories.company-internal '${{ secrets.REPO_ENDPOINT }}'
+        poetry publish -r company-internal -u '${{ secrets.REPO_USERNAME }}' -p '${{ secrets.REPO_PASSWORD }}'
