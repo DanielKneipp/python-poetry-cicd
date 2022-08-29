@@ -20,10 +20,11 @@ jobs:
       env:
         REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
         REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+        REPO_ENDPOINT: ${{ secrets.REPO_ENDPOINT }}
       # Should come from the repo configuration as secrets
-      if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null
+      if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null && env.REPO_ENDPOINT != null
       run: |
-        poetry config repositories.company-internal https://repo.company.com/repository/pypi-internal
+        poetry config repositories.company-internal ${{ secrets.REPO_ENDPOINT }}
         poetry config http-basic.company-internal ${{ secrets.REPO_USERNAME }} ${{ secrets.REPO_PASSWORD }}
 
         poetry publish -r company-internal
