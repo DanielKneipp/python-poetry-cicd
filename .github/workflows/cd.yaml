@@ -11,18 +11,34 @@ jobs:
     - name: Setup machine
       uses: ./.github/actions/setup
 
-    - name: Build package
-      run: |
-        poetry build
+    # - name: Build package
+    #   run: |
+    #     poetry build
 
-    - name: Publish
+    - name: Build and publish
       # Required since secrets is not available in conditional statements (See https://github.com/actions/runner/issues/520)
       env:
         REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
         REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
-        REPO_ENDPOINT: ${{ secrets.REPO_ENDPOINT }}
+        REPO_URL: ${{ secrets.REPO_URL }}
+        REPO_NAME: ${{ secrets.REPO_NAME }}
       # Should come from the repo configuration as secrets
-      if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null && env.REPO_ENDPOINT != null
-      run: |
-        poetry config repositories.company-internal ${{ secrets.REPO_ENDPOINT }}
-        poetry publish -r company-internal -u ${{ secrets.REPO_USERNAME }} -p ${{ secrets.REPO_PASSWORD }}
+      if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null && env.REPO_URL != null && env.REPO_NAME != null
+      uses: JRubics/poetry-publish@v1.12
+      with:
+        repository_name: ${{ secrets.REPO_NAME }}
+        repository_url: ${{ secrets.REPO_URL }}
+        repository_username: ${{ secrets.REPO_USERNAME }}
+        repository_password: ${{ secrets.REPO_PASSWORD }}
+
+    # - name: Publish
+    #   # Required since secrets is not available in conditional statements (See https://github.com/actions/runner/issues/520)
+    #   env:
+    #     REPO_USERNAME: ${{ secrets.REPO_USERNAME }}
+    #     REPO_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+    #     REPO_ENDPOINT: ${{ secrets.REPO_ENDPOINT }}
+    #   # Should come from the repo configuration as secrets
+    #   if: env.REPO_USERNAME != null && env.REPO_PASSWORD != null && env.REPO_ENDPOINT != null
+    #   run: |
+    #     poetry config repositories.company-internal ${{ secrets.REPO_ENDPOINT }}
+    #     poetry publish -r company-internal -u ${{ secrets.REPO_USERNAME }} -p ${{ secrets.REPO_PASSWORD }}
