@@ -9,19 +9,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - run: git fetch origin master
+
     - name: Setup machine
       uses: ./.github/actions/setup
 
     - name: Run pre-commit for linting and poetry checks
       uses: pre-commit/action@v3.0.0  # Runs the linting and poetry checks
 
+    - name: Check if python files changed
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          src:
+            - '**/*.py'
+            - 'poetry.lock'
+            - 'pyproject.toml'
+
+    - name: Assert that the package version has changed from the master branch
+      id: version_changed
+      if: steps.changes.outputs.src == 'true'
+      run: bash .github/scripts/check-version-changed.sh
+
     - name: Run tests
+      id: tests
+      if: steps.version_changed.outcome == 'success'
       run: |
         source .venv/bin/activate
         pytest --cache-clear --cov=python_cicd 2>&1 | tee pytest-coverage.txt
 
     # NOTE: local test with act doesn't work
     - name: Comment coverage
+      if: steps.tests.outcome == 'success'
       uses: coroo/pytest-coverage-commentator@v1.0.2
       with:
         pytest-coverage: pytest-coverage.txt

@@ -87,11 +87,22 @@ gh auth login
 act push --container-architecture linux/amd64
 
 # Test pull_request-test workflows (there is a known issue with the `Comment coverage` step)
-act pull_request --container-architecture linux/amd64 -s GITHUB_TOKEN=$(gh auth status -t 2>&1 | grep Token | awk '{print $3}')
+act pull_request --container-architecture linux/amd64 \
+  -s GITHUB_TOKEN=$(gh auth status -t 2>&1 | grep Token | awk '{print $3}') \
+  -P ubuntu-latest=nektos/act-environments-ubuntu:18.04  # See https://github.com/dorny/paths-filter#notes
 ```
 
-> **Note**: There is a known issue with the `Comment coverage` step. It seems that act is
-> not compatible with simulating interactions with PRs
+> **Note**: There are two known issues when using `act`.
+>
+> 1. One is with the `Comment coverage` step of the `ci` workflow. It seems that `act` is not compatible with simulating interactions with PRs.
+> 2. The other is with the `Publish` step of the `cd` workflow. You should be able to test it when passing the repository credentials like this:
+> ```bash
+> act push --container-architecture linux/amd64 \
+>   -s REPO_USERNAME="${REPO_USERNAME}" \
+>   -s REPO_PASSWORD="${REPO_PASSWORD}" \
+>   -s REPO_ENDPOINT="${REPO_ENDPOINT}"
+> ```
+> However, the step hangs.
 
 ## Private repository configuration
 
