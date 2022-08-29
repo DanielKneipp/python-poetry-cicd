@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - run: git fetch origin/master
+
     - name: Setup machine
       uses: ./.github/actions/setup
 
