@@ -26,4 +26,5 @@ jobs:
       run: |
         poetry --version
         poetry config repositories.company-internal ${{ secrets.REPO_ENDPOINT }}
+        poetry config --list --verbose
         poetry publish -r company-internal -u ${{ secrets.REPO_USERNAME }} -p ${{ secrets.REPO_PASSWORD }}
