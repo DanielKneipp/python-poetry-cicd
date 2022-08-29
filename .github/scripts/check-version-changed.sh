@@ -4,7 +4,7 @@
 set -e
 set -o pipefail
 
-git show master:pyproject.toml > pyproject-master.toml
+git show origin/master:pyproject.toml > pyproject-master.toml
 
 current_version=$(python .github/scripts/get-version.py pyproject.toml)
 master_version=$(python .github/scripts/get-version.py pyproject-master.toml)
@@ -20,6 +20,8 @@ if [[ ${current_version} == ${master_version} ]]; then
     >&2 echo "Versions must change from ${current_version}"
     exit 1
 fi
+
+python .github/scripts/is-version-bigger.py ${current_version} ${master_version}
 
 echo "Current version: $current_version"
 echo "master version: $master_version"
